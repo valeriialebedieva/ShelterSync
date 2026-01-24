@@ -1,0 +1,4 @@
+com/sheltersync/repository/AnimalRepository.class
+com/sheltersync/model/Animal.class
+com/sheltersync/ShelterSyncApplication.class
+com/sheltersync/controller/AnimalController.class

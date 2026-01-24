@@ -1,0 +1,3 @@
+INSERT INTO animals (name, breed, age, status, arrival_date, image_url) VALUES ('Buddy', 'Golden Retriever', 3, 'Available', '2023-01-15', 'buddy.jpg');
+INSERT INTO animals (name, breed, age, status, arrival_date, image_url) VALUES ('Mittens', 'Tabby Cat', 2, 'Available', '2023-02-10', 'mittens.jpg');
+INSERT INTO animals (name, breed, age, status, arrival_date, image_url) VALUES ('Max', 'German Shepherd', 5, 'Adopted', '2022-11-20', 'max.jpg');
