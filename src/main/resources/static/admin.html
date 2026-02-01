@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShelterSync - Admin Dashboard</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <nav>
+        <div style="font-size: 1.5rem; font-weight: bold;">ShelterSync Admin</div>
+        <div>
+            <a href="index.html">View Public Site</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2>Add New Animal</h2>
+        <form id="add-pet-form" class="admin-form">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" required>
+            </div>
+            <div class="form-group">
+                <label for="breed">Breed</label>
+                <input type="text" id="breed" required>
+            </div>
+            <div class="form-group">
+                <label for="age">Age</label>
+                <input type="number" id="age" required>
+            </div>
+            <div class="form-group">
+                <label for="status">Status</label>
+                <select id="status">
+                    <option value="Available">Available</option>
+                    <option value="Adopted">Adopted</option>
+                    <option value="Foster">Foster</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="arrivalDate">Arrival Date</label>
+                <input type="date" id="arrivalDate" required>
+            </div>
+            <div class="form-group">
+                <label for="imageUrl">Image URL (Optional)</label>
+                <input type="text" id="imageUrl" placeholder="http://example.com/dog.jpg">
+            </div>
+            <button type="submit" class="btn">Add Pet</button>
+        </form>
+
+        <h2>Inventory</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Breed</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="admin-table-body">
+                </tbody>
+        </table>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
