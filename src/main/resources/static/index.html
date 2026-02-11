@@ -17,9 +17,26 @@
 
     <div class="container">
         <h1>Available Pets</h1>
-        <p>Find your new best friend today.</p>
-        <div id="gallery-grid" class="gallery-grid">
+        
+        <div class="admin-form" style="margin-bottom: 2rem;">
+            <div style="display: flex; gap: 1rem;">
+                <input type="text" id="search-input" placeholder="Search by name..." style="padding: 0.5rem; flex: 1;">
+                <select id="filter-status" style="padding: 0.5rem; flex: 1;">
+                    <option value="All">All Statuses</option>
+                    <option value="Available">Available</option>
+                    <option value="Adopted">Adopted</option>
+                    <option value="Foster">Foster</option>
+                </select>
+                <select id="filter-breed" style="padding: 0.5rem; flex: 1;">
+                    <option value="All">All Breeds</option>
+                    <option value="Cat">Cats</option>
+                    <option value="Dog">Dogs</option>
+                </select>
             </div>
+        </div>
+
+        <div id="gallery-grid" class="gallery-grid">
+        </div>
     </div>
 
     <script src="js/app.js"></script>
