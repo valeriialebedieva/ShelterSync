@@ -144,3 +144,15 @@ th {
     background-color: var(--primary);
     color: white;
 }
+
+/* Offline Alert Style */
+.offline-alert {
+    background-color: #e74c3c;
+    color: white;
+    text-align: center;
+    padding: 1rem;
+    display: none; 
+    margin-bottom: 1rem;
+    border-radius: 4px;
+    font-weight: bold;
+}

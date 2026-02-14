@@ -15,12 +15,34 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function loadGallery() {
+    const alertBox = document.getElementById('offline-alert');
     try {
         const response = await fetch(API_URL);
+        
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
         allPets = await response.json();
+        
+        
+        localStorage.setItem('shelterPets', JSON.stringify(allPets));
+        
+        if(alertBox) alertBox.style.display = 'none';
+        
         renderGallery(allPets);
+
     } catch (error) {
-        console.error('Error loading gallery:', error);
+        console.error('Error loading gallery (Offline Mode):', error);
+        
+       
+        const cachedPets = localStorage.getItem('shelterPets');
+        
+        if (cachedPets) {
+            allPets = JSON.parse(cachedPets);
+            if(alertBox) alertBox.style.display = 'block'; // Show offline message
+            renderGallery(allPets);
+        }
     }
 }
 
