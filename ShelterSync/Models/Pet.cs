@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 // Represents a pet in the shelter system, including details such as name, species, breed, age, and adoption status.
-namespace ShelterHelper.Models
+
+namespace ShelterSync.Models
 {
     /// <summary>
     /// Represents a pet in the shelter system.
