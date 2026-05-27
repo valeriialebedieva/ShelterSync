@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-
+// impporting necessary namespaces for data annotations and validation attributess
 namespace ShelterHelper.Models
 {
     public class AdoptionRequest
