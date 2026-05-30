@@ -1,8 +1,39 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@model IEnumerable<ShelterSync.Models.Pet>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container">
+    <h2 class="my-4">Furry Friends Gallery</h2>
+
+    <form asp-action="Index" method="get" class="mb-4">
+        <div class="input-group">
+            <input type="text" name="searchString" placeholder="Search by name..." class="form-control" />
+            <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+    </form>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="row">
+            @foreach (var pet in Model)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        @if (!string.IsNullOrEmpty(pet.ImagePath))
+                        {
+                            <img src="@pet.ImagePath" class="card-img-top" alt="@pet.Name" style="height:200px; object-fit:cover;">
+                        }
+                        <div class="card-body">
+                            <h5 class="card-title">@pet.Name</h5>
+                            <p class="card-text">@pet.Species - @pet.Breed</p>
+                            <p class="text-muted small">@pet.Notes</p>
+                            <a asp-controller="Adoption" asp-action="Request" asp-route-petId="@pet.Id" class="btn btn-primary w-100">Request Adoption</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">No pets found. Check back soon!</div>
+    }
 </div>

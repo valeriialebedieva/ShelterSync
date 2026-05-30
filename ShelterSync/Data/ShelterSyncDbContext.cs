@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using ShelterSync.Models;
 
 namespace ShelterSync.Data;
 
@@ -8,8 +9,10 @@ namespace ShelterSync.Data;
 /// </summary>
 public class ShelterSyncDbContext : DbContext
 {
-    public ShelterSyncDbContext(DbContextOptions<ShdoelterSyncDbContext> options)
+    public ShelterSyncDbContext(DbContextOptions<ShelterSyncDbContext> options)
         : base(options) { }
+
+    public DbSet<Pet> Pets { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

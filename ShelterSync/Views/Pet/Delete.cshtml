@@ -1,0 +1,57 @@
+@model ShelterSync.Models.Pet
+
+@{
+    ViewData["Title"] = "Delete Pet";
+}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">🗑️ Delete Pet</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning" role="alert">
+                        <strong>⚠️ Warning!</strong> This action cannot be undone.
+                    </div>
+
+                    <p class="mb-3">
+                        Are you sure you want to delete <strong>@Model?.Name</strong>?
+                    </p>
+
+                    @if (!string.IsNullOrEmpty(Model?.ImagePath))
+                    {
+                        <div class="mb-3">
+                            <img src="@Model.ImagePath" class="img-fluid rounded" style="max-height: 300px; object-fit: cover;"
+                                 alt="@Model.Name">
+                        </div>
+                    }
+
+                    <div class="row text-muted mb-3">
+                        <div class="col-6">
+                            <strong>Species:</strong> @Model?.Species
+                        </div>
+                        <div class="col-6">
+                            <strong>Breed:</strong> @(Model?.Breed ?? "Not specified")
+                        </div>
+                    </div>
+
+                    <p class="text-muted small">
+                        All associated data will be permanently removed.
+                    </p>
+                </div>
+                <div class="card-footer bg-light">
+                    <form asp-controller="Pet" asp-action="Delete" asp-route-id="@Model?.Id" method="post" class="d-flex gap-2">
+                        <button type="submit" class="btn btn-danger flex-grow-1">
+                            <span class="me-2">✓</span>Yes, Delete Pet
+                        </button>
+                        <a asp-controller="Pet" asp-action="Index" class="btn btn-secondary">
+                            Cancel
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
