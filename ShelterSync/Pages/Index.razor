@@ -1,0 +1,92 @@
+@page "/"
+@using ShelterSync.Models
+@using ShelterSync.Services
+@inject PetService PetService
+
+<div class="hero-section text-center p-5 bg-light mb-4">
+    <h1>Meet Your New Best Friend</h1>
+    @if (petOfTheWeek != null)
+    {
+        <div class="card mx-auto mt-3" style="max-width: 400px;">
+            <div class="card-header bg-warning">Pet of the Week!</div>
+            <img src="@petOfTheWeek.ImagePath" class="card-img-top" alt="@petOfTheWeek.Name">
+            <div class="card-body"><h5>@petOfTheWeek.Name</h5></div>
+        </div>
+    }
+</div>
+
+<div class="container">
+    <div class="d-flex gap-2 mb-4">
+        <button class="btn btn-outline-primary @(filter == "" ? "active" : "")" @onclick='() => FilterPets("")'>All</button>
+        <button class="btn btn-outline-primary @(filter == "Dog" ? "active" : "")" @onclick='() => FilterPets("Dog")'>Dogs</button>
+        <button class="btn btn-outline-primary @(filter == "Cat" ? "active" : "")" @onclick='() => FilterPets("Cat")'>Cats</button>
+    </div>
+
+    <div class="row">
+        @if (filteredPets != null && filteredPets.Count > 0)
+        {
+            @foreach (var pet in filteredPets)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        @if (!string.IsNullOrEmpty(pet.ImagePath))
+                        {
+                            <img src="@pet.ImagePath" class="card-img-top" alt="@pet.Name"
+                                 style="height: 250px; object-fit: cover;">
+                        }
+                        <div class="card-body">
+                            <h5>@pet.Name</h5>
+                            <p>
+                                <span class="badge bg-info">@pet.Species</span>
+                                @if (!string.IsNullOrEmpty(pet.Breed))
+                                {
+                                    <span class="badge bg-secondary">@pet.Breed</span>
+                                }
+                            </p>
+                            @if (pet.Age > 0)
+                            {
+                                <p class="small"><strong>Age:</strong> @pet.Age year@(pet.Age != 1 ? "s" : "")</p>
+                            }
+                            @if (!string.IsNullOrEmpty(pet.Notes))
+                            {
+                                <p class="text-muted small">@pet.Notes</p>
+                            }
+                            <button class="btn btn-primary">Request Adoption</button>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12">
+                <div class="alert alert-info text-center">No pets found for the selected filter.</div>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private string filter = "";
+    private List<Pet> filteredPets = new();
+    private Pet? petOfTheWeek;
+
+    protected override async Task OnInitializedAsync()
+    {
+        petOfTheWeek = await PetService.GetPetOfTheWeekAsync();
+        await LoadPetsAsync();
+    }
+
+    private async Task FilterPets(string species)
+    {
+        filter = species;
+        await LoadPetsAsync();
+    }
+
+    private async Task LoadPetsAsync()
+    {
+        filteredPets = string.IsNullOrEmpty(filter)
+            ? await PetService.GetAvailablePetsAsync()
+            : await PetService.GetAvailablePetsAsync(filter);
+    }
+}

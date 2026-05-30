@@ -1,21 +1,35 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using ShelterSync.Models;
+using ShelterSync.Services;
 
 namespace ShelterSync.Controllers;
 
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
+    private readonly PetService _petService;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(ILogger<HomeController> logger, PetService petService)
     {
         _logger = logger;
+        _petService = petService;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index(string? searchString)
     {
-        return View();
+        var pets = await _petService.GetAvailablePetsAsync();
+
+        if (!string.IsNullOrEmpty(searchString))
+        {
+            pets = pets
+                .Where(p => p.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
+
+        ViewBag.PetOfTheWeek = await _petService.GetPetOfTheWeekAsync();
+
+        return View(pets);
     }
 
     public IActionResult Privacy()

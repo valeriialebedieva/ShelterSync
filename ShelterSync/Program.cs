@@ -1,13 +1,18 @@
 using Microsoft.EntityFrameworkCore;
 using ShelterSync.Data;
+using ShelterSync.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
+builder.Services.AddServerSideBlazor();
 
 builder.Services.AddDbContext<ShelterSyncDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<PetService>();
 
 var app = builder.Build();
 
@@ -29,5 +34,8 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapBlazorHub();
+app.MapFallbackToPage("/_Host");
 
 app.Run();
