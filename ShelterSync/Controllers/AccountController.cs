@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
-namespace ShelterHelper.Controllers;
+namespace ShelterSync.Controllers;
 
 /// <summary>
 /// Controller for managing user authentication (login, logout, access denied).
