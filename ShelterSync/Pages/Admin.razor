@@ -1,0 +1,70 @@
+@page "/admin"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Forms
+@using ShelterHelper.Models
+@using ShelterHelper.Services
+@attribute [Authorize]
+@inject PetService PetService
+
+<h3>Admin Management</h3>
+
+<EditForm Model="tempPet" OnValidSubmit="SavePet">
+    <div class="row g-3">
+        <div class="col-md-3">
+            @* Fix: lowercase 'v' in @bind-value can sometimes cause issues; use capital 'V' *@
+            <InputText @bind-Value="tempPet.Name" placeholder="Pet Name" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            @* Fix: Added TValue="string" so .NET 8 knows how to bind the data *@
+            <InputSelect TValue="string" @bind-Value="tempPet.Species" class="form-select">
+                <option value="Dog">Dog</option>
+                <option value="Cat">Cat</option>
+            </InputSelect>
+        </div>
+        <div class="col-md-2">
+            <InputFile OnChange="HandleFileSelected" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-success">Save Pet</button>
+        </div>
+    </div>
+</EditForm>
+
+<table class="table mt-4">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Species</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var pet in PetService.GetAvailablePets())
+        {
+            <tr>
+                <td>@pet.Name</td>
+                <td>@pet.Species</td>
+                <td>@(pet.IsAdopted ? "Adopted" : "Available")</td>
+                <td>
+                    <button class="btn btn-danger btn-sm" @onclick="() => PetService.DeletePet(pet.Id)">Delete</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private Pet tempPet = new();
+    
+    private void SavePet()
+    {
+        PetService.AddPet(tempPet);
+        tempPet = new Pet();
+    }
+    
+    private void HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        // Logic for image storage
+    }
+}
