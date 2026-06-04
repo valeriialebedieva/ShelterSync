@@ -60,7 +60,7 @@ namespace ShelterSync.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Pets");
+                    b.ToTable("Pets", (string)null);
 
                     b.HasData(
                         new

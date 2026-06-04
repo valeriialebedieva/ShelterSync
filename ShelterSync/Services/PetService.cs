@@ -27,7 +27,7 @@ public class PetService
     /// </summary>
     /// <param name="species">Optional filter by species (e.g., "Dog", "Cat")</param>
     /// <returns>List of available pets matching the criteria</returns>
-    public async Task<List<Pet>> GetAvailablePetsAsync(string? species = null)
+    public async Task<List<Pet>> GetAvailablePets(string? species = null)
     {
         var query = _context.Pets.Where(p => !p.IsAdopted);
 
@@ -43,7 +43,7 @@ public class PetService
     /// Retrieves the pet designated as Pet of the Week.
     /// </summary>
     /// <returns>Pet marked as Pet of the Week, or null if none exists</returns>
-    public async Task<Pet?> GetPetOfTheWeekAsync()
+    public async Task<Pet?> GetPetOfTheWeek()
     {
         return await _context.Pets.FirstOrDefaultAsync(p => p.IsPetOfTheWeek);
     }
@@ -71,7 +71,7 @@ public class PetService
     /// Adds a new pet to the system.
     /// </summary>
     /// <param name="pet">The pet to add</param>
-    public async Task AddPetAsync(Pet pet)
+    public async Task AddPet(Pet pet)
     {
         _context.Pets.Add(pet);
         await _context.SaveChangesAsync();
@@ -83,6 +83,12 @@ public class PetService
     /// <param name="updatedPet">The pet with updated information</param>
     public async Task UpdatePetAsync(Pet updatedPet)
     {
+        var tracked = _context.Pets.Local.FirstOrDefault(p => p.Id == updatedPet.Id);
+        if (tracked != null)
+        {
+            _context.Entry(tracked).State = EntityState.Detached;
+        }
+
         _context.Pets.Update(updatedPet);
         await _context.SaveChangesAsync();
     }
@@ -92,7 +98,7 @@ public class PetService
     /// </summary>
     /// <param name="id">The ID of the pet to delete</param>
     /// <returns>True if the pet was found and deleted, false otherwise</returns>
-    public async Task<bool> DeletePetAsync(int id)
+    public async Task<bool> DeletePet(int id)
     {
         var pet = await _context.Pets.FindAsync(id);
         if (pet == null)

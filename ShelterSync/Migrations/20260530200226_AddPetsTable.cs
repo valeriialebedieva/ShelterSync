@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
@@ -45,6 +45,8 @@ namespace ShelterSync.Migrations
                     { 5, 4, "Beagle", "https://images.dog.ceo/breeds/beagle/puppy-1.jpg", false, false, "Buddy", "Sweet-natured and food-motivated. Great for training and outdoor adventures.", "Dog" },
                     { 6, 3, "Persian", "https://cdn2.thecatapi.com/images/c0f_dBlPH.jpg", false, false, "Mittens", "Elegant and serene. Prefers a quiet environment with lots of petting.", "Cat" }
                 });
+
+            migrationBuilder.Sql("ALTER SEQUENCE \"Pets_Id_seq\" RESTART WITH 7;");
         }
 
         /// <inheritdoc />

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using ShelterSync.Data;
 using ShelterSync.Services;
@@ -8,6 +9,17 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+
+builder.Services.AddAuthentication("Cookies")
+    .AddCookie("Cookies", options =>
+    {
+        options.LoginPath = "/Account/Login";
+        options.LogoutPath = "/Account/Logout";
+        options.AccessDeniedPath = "/Account/AccessDenied";
+        options.ExpireTimeSpan = TimeSpan.FromDays(7);
+    });
+builder.Services.AddAuthorization();
+builder.Services.AddSession();
 
 builder.Services.AddDbContext<ShelterSyncDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -29,6 +41,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
@@ -37,5 +50,18 @@ app.MapControllerRoute(
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
+
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<ShelterSyncDbContext>();
+    try
+    {
+        context.Database.ExecuteSqlRaw("SELECT setval(pg_get_serial_sequence('\"Pets\"', 'Id'), COALESCE(MAX(\"Id\"), 1)) FROM \"Pets\";");
+    }
+    catch (Exception)
+    {
+        // Ignore if database/table isn't created/ready yet
+    }
+}
 
 app.Run();

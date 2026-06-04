@@ -40,14 +40,14 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var pet in PetService.GetAvailablePets())
+        @foreach (var pet in Task.Run(() => PetService.GetAvailablePets()).GetAwaiter().GetResult())
         {
             <tr>
                 <td>@pet.Name</td>
                 <td>@pet.Species</td>
                 <td>@(pet.IsAdopted ? "Adopted" : "Available")</td>
                 <td>
-                    <button class="btn btn-danger btn-sm" @onclick="() => PetService.DeletePet(pet.Id)">Delete</button>
+                    <button class="btn btn-danger btn-sm" @onclick="() => Task.Run(() => PetService.DeletePet(pet.Id)).GetAwaiter().GetResult()">Delete</button>
                 </td>
             </tr>
         }
@@ -59,12 +59,29 @@
     
     private void SavePet()
     {
-        PetService.AddPet(tempPet);
+        Task.Run(() => PetService.AddPet(tempPet)).GetAwaiter().GetResult();
         tempPet = new Pet();
     }
     
-    private void HandleFileSelected(InputFileChangeEventArgs e)
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
     {
-        // Logic for image storage
+        var file = e.File;
+        if (file != null)
+        {
+            try
+            {
+                var maxFileSize = 5 * 1024 * 1024; // 5MB limit
+                using var stream = file.OpenReadStream(maxFileSize);
+                using var ms = new System.IO.MemoryStream();
+                await stream.CopyToAsync(ms);
+                var fileBytes = ms.ToArray();
+                var contentType = file.ContentType;
+                tempPet.ImagePath = $"data:{contentType};base64,{Convert.ToBase64String(fileBytes)}";
+            }
+            catch (Exception)
+            {
+                // Handle size limit or read error silently or log
+            }
+        }
     }
 }

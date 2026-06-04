@@ -3,47 +3,108 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="ShelterSync - Pet adoption management system helping shelters connect with perfect matches" />
+    <meta name="theme-color" content="#6f42c1" />
     <title>@ViewData["Title"] - ShelterSync</title>
+    <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ShelterSync.styles.css" asp-append-version="true" />
 </head>
 <body>
+    <!-- Navigation Header -->
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ShelterSync</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm" role="navigation" aria-label="Main navigation">
+            <div class="container-fluid px-md-5">
+                <!-- Brand -->
+                <a class="navbar-brand fw-bold fs-5" asp-area="" asp-controller="Home" asp-action="Index" aria-label="ShelterSync Home">
+                    <span class="me-2">🐾</span>ShelterSync
+                </a>
+                
+                <!-- Responsive Toggle -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                
+                <!-- Navigation Items -->
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto gap-2">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">
+                                <span class="me-1">🏠</span>Home
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link text-light" asp-area="" asp-controller="Pet" asp-action="Index">
+                                <span class="me-1">🐶</span>Pets
+                            </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Privacy">
+                                <span class="me-1">🔒</span>Privacy
+                            </a>
+                        </li>
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <li class="nav-item">
+                                <span class="nav-link text-light">
+                                    👤 @User.Identity.Name
+                                </span>
+                            </li>
+                            <li class="nav-item">
+                                <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-outline-light btn-sm px-3">
+                                        <span class="me-1">🚪</span>Sign Out
+                                    </button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-light btn btn-outline-light btn-sm px-3" asp-area="" asp-controller="Account" asp-action="Login">
+                                    <span class="me-1">👤</span>Sign In
+                                </a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - ShelterSync - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <!-- Main Content -->
+    <main role="main" class="pb-5">
+        <div class="container-fluid">
+            @RenderBody()
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-top bg-light mt-5 py-4">
+        <div class="container-fluid px-md-5">
+            <div class="row">
+                <div class="col-md-6 mb-3 mb-md-0">
+                    <h6 class="fw-bold text-primary mb-2">ShelterSync</h6>
+                    <p class="text-muted small">Connecting pets with loving homes since 2026.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="text-muted small">
+                        <a asp-area="" asp-controller="Home" asp-action="Privacy" class="text-decoration-none text-muted">Privacy Policy</a>
+                        <span class="mx-2">•</span>
+                        <a href="#" class="text-decoration-none text-muted">Contact Us</a>
+                    </p>
+                    <p class="text-muted small">&copy; 2026 - ShelterSync. All rights reserved.</p>
+                </div>
+            </div>
         </div>
     </footer>
+
+    <!-- Scripts -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/site.js" asp-append-version="true" defer></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
