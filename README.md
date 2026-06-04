@@ -1,10 +1,10 @@
 # ShelterSync
 
-ShelterHelper - Pet Adoption Management System
+ShelterSync - Pet Adoption Management System
 
 ## About
 
-> ShelterHelper is a comprehensive .NET Blazor web application designed to help animal shelters manage their pet inventory and facilitate pet adoptions. The application provides a user-friendly interface for browsing available pets, managing shelter operations, and connecting potential adopters with their perfect companion.
+> ShelterSync is a comprehensive .NET Blazor web application designed to help animal shelters manage their pet inventory and facilitate pet adoptions. The application provides a user-friendly interface for browsing available pets, managing shelter operations, and connecting potential adopters with their perfect companion.
 
 ## Favorite Quote
 
@@ -36,11 +36,11 @@ ShelterHelper - Pet Adoption Management System
    ```bash
    docker compose up -d
    ```
-   This starts a PostgreSQL 16 container on `localhost:5432` with the following credentials:
+   This starts a PostgreSQL 16 container on `localhost:5023` with the following credentials:
    | Setting  | Value             |
    |----------|-------------------|
    | Host     | `localhost`       |
-   | Port     | `5432`            |
+   | Port     | `5023`            |
    | Database | `sheltersync`     |
    | Username | `sheltersync`     |
    | Password | `sheltersync_dev` |
