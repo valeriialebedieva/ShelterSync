@@ -5,6 +5,12 @@ using ShelterSync.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var port = Environment.GetEnvironmentVariable("PORT");
+if (!string.IsNullOrEmpty(port))
+{
+    builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
+}
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
@@ -55,13 +61,15 @@ app.MapFallbackToPage("/_Host");
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<ShelterSyncDbContext>();
+    context.Database.Migrate();
+
     try
     {
         context.Database.ExecuteSqlRaw("SELECT setval(pg_get_serial_sequence('\"Pets\"', 'Id'), COALESCE(MAX(\"Id\"), 1)) FROM \"Pets\";");
     }
     catch (Exception)
     {
-        // Ignore if database/table isn't created/ready yet
+        // Ignore if Pets table is empty or sequence is not ready yet
     }
 }
 
