@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using ShelterSync.Models;
 using ShelterSync.Services;
 
@@ -33,7 +34,7 @@ public class PetController : Controller
     /// <returns>View with list of pets</returns>
     public async Task<IActionResult> Index(string? searchString)
     {
-        var pets = await _petService.GetAvailablePetsAsync();
+        var pets = await _petService.GetAvailablePets();
 
         if (!string.IsNullOrEmpty(searchString))
         {
@@ -50,6 +51,7 @@ public class PetController : Controller
     /// </summary>
     /// <returns>Create view</returns>
     [HttpGet]
+    [Authorize]
     public IActionResult Create() => View();
 
     /// <summary>
@@ -60,6 +62,7 @@ public class PetController : Controller
     /// <returns>Redirects to Index on success, returns Create view on error</returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize]
     public async Task<IActionResult> Create(Pet newPet, IFormFile? petPhoto)
     {
         if (petPhoto == null || petPhoto.Length == 0)
@@ -76,17 +79,17 @@ public class PetController : Controller
         {
             if (petPhoto != null)
             {
-                var imagePath = await SavePetPhotoAsync(petPhoto);
-                if (imagePath == null)
+                var base64Photo = await ConvertPhotoToBase64Async(petPhoto);
+                if (base64Photo == null)
                 {
                     ModelState.AddModelError("petPhoto", "File size cannot exceed 5MB");
                     return View(newPet);
                 }
 
-                newPet.ImagePath = imagePath;
+                newPet.ImagePath = base64Photo;
             }
 
-            await _petService.AddPetAsync(newPet);
+            await _petService.AddPet(newPet);
             return RedirectToAction(nameof(Index));
         }
         catch (Exception ex)
@@ -102,6 +105,7 @@ public class PetController : Controller
     /// <param name="id">The ID of the pet to edit</param>
     /// <returns>Edit view with pet data, or NotFound if pet doesn't exist</returns>
     [HttpGet]
+    [Authorize]
     public async Task<IActionResult> Edit(int id)
     {
         var pet = await _petService.GetPetByIdAsync(id);
@@ -122,6 +126,7 @@ public class PetController : Controller
     /// <returns>Redirects to Index on success, returns Edit view on error</returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize]
     public async Task<IActionResult> Edit(int id, Pet pet, IFormFile? petPhoto)
     {
         if (id != pet.Id)
@@ -144,14 +149,14 @@ public class PetController : Controller
 
             if (petPhoto != null && petPhoto.Length > 0)
             {
-                var imagePath = await SavePetPhotoAsync(petPhoto);
-                if (imagePath == null)
+                var base64Photo = await ConvertPhotoToBase64Async(petPhoto);
+                if (base64Photo == null)
                 {
                     ModelState.AddModelError("petPhoto", "File size cannot exceed 5MB");
                     return View(pet);
                 }
 
-                pet.ImagePath = imagePath;
+                pet.ImagePath = base64Photo;
             }
             else
             {
@@ -175,6 +180,7 @@ public class PetController : Controller
     /// <param name="id">The ID of the pet to delete</param>
     /// <returns>Delete confirmation view, or NotFound if pet doesn't exist</returns>
     [HttpGet]
+    [Authorize]
     public async Task<IActionResult> Delete(int id)
     {
         var pet = await _petService.GetPetByIdAsync(id);
@@ -193,6 +199,7 @@ public class PetController : Controller
     /// <returns>Redirects to Index after deletion</returns>
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
+    [Authorize]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
         try
@@ -203,21 +210,9 @@ public class PetController : Controller
                 return NotFound();
             }
 
-            // Delete associated image if it exists and is a local file
-            if (!string.IsNullOrEmpty(pet.ImagePath) && !pet.ImagePath.StartsWith("http"))
-            {
-                var fullImagePath = Path.Combine(
-                    Directory.GetCurrentDirectory(),
-                    "wwwroot",
-                    pet.ImagePath.TrimStart('/'));
+            // No local files to delete since we store photo as base64 in the database
 
-                if (System.IO.File.Exists(fullImagePath))
-                {
-                    System.IO.File.Delete(fullImagePath);
-                }
-            }
-
-            await _petService.DeletePetAsync(id);
+            await _petService.DeletePet(id);
             return RedirectToAction(nameof(Index));
         }
         catch (Exception ex)
@@ -228,31 +223,23 @@ public class PetController : Controller
     }
 
     /// <summary>
-    /// Saves an uploaded pet photo to the wwwroot/images directory.
-    /// Returns the relative URL path, or null if the file exceeds the size limit.
+    /// Converts an uploaded pet photo to a Base64 data URL.
+    /// Returns the base64 string, or null if the file exceeds the size limit.
     /// </summary>
     /// <param name="photo">The uploaded file</param>
-    /// <returns>Relative image path (e.g., "/images/guid.jpg"), or null if invalid</returns>
-    private async Task<string?> SavePetPhotoAsync(IFormFile photo)
+    /// <returns>Base64 data URL string, or null if invalid</returns>
+    private async Task<string?> ConvertPhotoToBase64Async(IFormFile photo)
     {
         if (photo.Length > MaxFileSize)
         {
             return null;
         }
+        
+        using var memoryStream = new MemoryStream();
+        await photo.CopyToAsync(memoryStream);
+        var fileBytes = memoryStream.ToArray();
 
-        var fileName = Guid.NewGuid() + Path.GetExtension(photo.FileName);
-        var imagesDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
-
-        if (!Directory.Exists(imagesDirectory))
-        {
-            Directory.CreateDirectory(imagesDirectory);
-        }
-
-        var savePath = Path.Combine(imagesDirectory, fileName);
-
-        await using var stream = new FileStream(savePath, FileMode.Create);
-        await photo.CopyToAsync(stream);
-
-        return "/images/" + fileName;
+        var contentType = photo.ContentType; // e.g. "image/jpeg", "image/png"
+        return $"data:{contentType};base64,{Convert.ToBase64String(fileBytes)}";
     }
 }
