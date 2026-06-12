@@ -16,24 +16,24 @@ public class AdoptionController : Controller
     }
 
     [HttpGet]
-    public IActionResult Request(int petId)
+    public async Task<IActionResult> Submit(int petId)
     {
-        var pet = _petService.GetPetById(petId);
+        var pet = await _petService.GetPetByIdAsync(petId);
         if (pet == null) return NotFound();
         var model = new AdoptionRequest { PetId = petId };
         ViewBag.Pet = pet;
-        return View(model);
+        return View("Request", model);
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Request(AdoptionRequest request)
+    public async Task<IActionResult> Submit(AdoptionRequest request)
     {
         if (!ModelState.IsValid)
         {
-            var pet = _petService.GetPetById(request.PetId);
+            var pet = await _petService.GetPetByIdAsync(request.PetId);
             ViewBag.Pet = pet;
-            return View(request);
+            return View("Request", request);
         }
 
         _adoptionService.Add(request);

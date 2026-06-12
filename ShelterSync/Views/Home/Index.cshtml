@@ -1,4 +1,4 @@
-@model IEnumerable<ShelterSync.Models.Pet>
+﻿@model IEnumerable<ShelterSync.Models.Pet>
 
 <div class="container">
     <h2 class="my-4">Furry Friends Gallery</h2>
@@ -25,7 +25,7 @@
                             <h5 class="card-title">@pet.Name</h5>
                             <p class="card-text">@pet.Species - @pet.Breed</p>
                             <p class="text-muted small">@pet.Notes</p>
-                            <a asp-controller="Adoption" asp-action="Request" asp-route-petId="@pet.Id" class="btn btn-primary w-100">Request Adoption</a>
+                            <a asp-controller="Adoption" asp-action="Submit" asp-route-petId="@pet.Id" class="btn btn-primary w-100">Request Adoption</a>
                         </div>
                     </div>
                 </div>

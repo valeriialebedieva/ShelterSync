@@ -25,6 +25,7 @@ builder.Services.AddDbContext<ShelterSyncDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<PetService>();
+builder.Services.AddSingleton<AdoptionService>();
 
 var app = builder.Build();
 
