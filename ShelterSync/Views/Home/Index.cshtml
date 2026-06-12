@@ -1,39 +1,92 @@
 ﻿@model IEnumerable<ShelterSync.Models.Pet>
+@{
+    var pets = Model?.ToList() ?? new List<ShelterSync.Models.Pet>();
+    var count = pets.Count;
+}
 
-<div class="container">
-    <h2 class="my-4">Furry Friends Gallery</h2>
-
-    <form asp-action="Index" method="get" class="mb-4">
-        <div class="input-group">
-            <input type="text" name="searchString" placeholder="Search by name..." class="form-control" />
-            <button type="submit" class="btn btn-primary">Search</button>
+<div class="container py-4">
+    <section class="page-hero">
+        <div class="page-hero__inner">
+            <span class="page-hero__eyebrow">🐾 Welcome to ShelterSync</span>
+            <h1>Find a friend who'll love you forever</h1>
+            <p>Every wag, purr, and cuddle starts here. Browse happy pets ready for their forever home.</p>
+            <div class="page-hero__stats">
+                <div class="stat-chip">
+                    <strong>@count</strong>
+                    <span>Available now</span>
+                </div>
+                <div class="stat-chip">
+                    <strong>@(pets.Count(p => p.Species == "Dog"))</strong>
+                    <span>Dogs</span>
+                </div>
+                <div class="stat-chip">
+                    <strong>@(pets.Count(p => p.Species == "Cat"))</strong>
+                    <span>Cats</span>
+                </div>
+            </div>
         </div>
+    </section>
+
+    <form asp-action="Index" method="get" class="search-bar mb-4">
+        <input type="text" name="searchString" placeholder="Search by name…" class="form-control flex-grow-1" />
+        <button type="submit" class="btn btn-primary">Search</button>
     </form>
 
-    @if (Model != null && Model.Any())
+    @if (pets.Any())
     {
-        <div class="row">
-            @foreach (var pet in Model)
+        <div class="section-heading">
+            <h2>Meet the pets</h2>
+            <span class="text-muted small">@count available</span>
+        </div>
+
+        <div class="row pet-grid">
+            @foreach (var pet in pets)
             {
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100 shadow-sm">
-                        @if (!string.IsNullOrEmpty(pet.ImagePath))
-                        {
-                            <img src="@pet.ImagePath" class="card-img-top" alt="@pet.Name" style="height:200px; object-fit:cover;">
-                        }
-                        <div class="card-body">
-                            <h5 class="card-title">@pet.Name</h5>
-                            <p class="card-text">@pet.Species - @pet.Breed</p>
-                            <p class="text-muted small">@pet.Notes</p>
-                            <a asp-controller="Adoption" asp-action="Submit" asp-route-petId="@pet.Id" class="btn btn-primary w-100">Request Adoption</a>
+                <div class="col-lg-4 col-md-6">
+                    <article class="pet-card">
+                        <div class="pet-card__media">
+                            @if (pet.IsPetOfTheWeek)
+                            {
+                                <span class="pet-of-week">⭐ Pet of the Week</span>
+                            }
+                            @if (!string.IsNullOrEmpty(pet.ImagePath))
+                            {
+                                <img src="@pet.ImagePath" alt="@pet.Name" loading="lazy" />
+                            }
+                            else
+                            {
+                                <div class="pet-card__placeholder">🐾</div>
+                            }
                         </div>
-                    </div>
+                        <div class="pet-card__body">
+                            <h2 class="pet-card__title">@pet.Name</h2>
+                            <div class="pet-card__meta">
+                                <span class="badge badge-species">@pet.Species</span>
+                                @if (!string.IsNullOrEmpty(pet.Breed))
+                                {
+                                    <span class="badge badge-breed">@pet.Breed</span>
+                                }
+                            </div>
+                            @if (!string.IsNullOrEmpty(pet.Notes))
+                            {
+                                <p class="pet-card__notes">@pet.Notes</p>
+                            }
+                            <a asp-controller="Adoption" asp-action="Submit" asp-route-petId="@pet.Id"
+                               class="btn btn-primary w-100 mt-auto">
+                                Request Adoption
+                            </a>
+                        </div>
+                    </article>
                 </div>
             }
         </div>
     }
     else
     {
-        <div class="alert alert-info">No pets found. Check back soon!</div>
+        <div class="empty-state">
+            <div class="empty-state__icon">🐾</div>
+            <h5>No pets found</h5>
+            <p class="text-muted">Check back soon — new friends arrive all the time!</p>
+        </div>
     }
 </div>
