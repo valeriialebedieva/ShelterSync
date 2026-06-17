@@ -341,6 +341,26 @@ h1, h2, h3, h4, h5, h6 {
   padding: 0.55rem 1.4rem;
 }
 
+.search-bar .form-select {
+  border: none;
+  border-left: 1.5px solid var(--border);
+  border-radius: 0;
+  background-color: transparent;
+  box-shadow: none;
+  padding: 0.45rem 2rem 0.45rem 0.75rem;
+  font-weight: 600;
+  color: var(--text-heading);
+  min-height: auto;
+  cursor: pointer;
+  outline: none;
+  transition: color var(--transition);
+}
+
+.search-bar .form-select:focus {
+  box-shadow: none;
+  color: var(--primary-hover);
+}
+
 /* ===========================
    PET CARDS — clean & bright
    =========================== */

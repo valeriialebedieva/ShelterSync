@@ -110,4 +110,18 @@ public class PetService
         await _context.SaveChangesAsync();
         return true;
     }
+
+    /// <summary>
+    /// Retrieves all unique species of available pets.
+    /// </summary>
+    /// <returns>List of unique species names</returns>
+    public async Task<List<string>> GetAvailableSpecies()
+    {
+        return await _context.Pets
+            .Where(p => !p.IsAdopted)
+            .Select(p => p.Species)
+            .Distinct()
+            .OrderBy(s => s)
+            .ToListAsync();
+    }
 }

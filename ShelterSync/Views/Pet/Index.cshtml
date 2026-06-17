@@ -27,10 +27,27 @@
     </section>
 
     <div class="row mb-4">
-        <div class="col-md-7 col-lg-5">
+        <div class="col-md-9 col-lg-7">
             <form asp-controller="Pet" asp-action="Index" method="get" class="search-bar">
                 <input type="text" name="searchString" class="form-control flex-grow-1"
                        placeholder="Search by pet name…" value="@ViewBag.CurrentFilter" />
+                <select name="species" class="form-select w-auto">
+                    <option value="">All Species</option>
+                    @if (ViewBag.AvailableSpecies != null)
+                    {
+                        foreach (var spec in ViewBag.AvailableSpecies)
+                        {
+                            if (ViewBag.SelectedSpecies == spec)
+                            {
+                                <option value="@spec" selected="selected">@spec</option>
+                            }
+                            else
+                            {
+                                <option value="@spec">@spec</option>
+                            }
+                        }
+                    }
+                </select>
                 <button class="btn btn-primary" type="submit">Search</button>
             </form>
         </div>

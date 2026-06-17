@@ -28,13 +28,14 @@ public class PetController : Controller
     }
 
     /// <summary>
-    /// Displays a list of all pets with optional search filtering.
+    /// Displays a list of all pets with optional search and species filtering.
     /// </summary>
     /// <param name="searchString">Optional search term to filter pets by name</param>
+    /// <param name="species">Optional filter by species</param>
     /// <returns>View with list of pets</returns>
-    public async Task<IActionResult> Index(string? searchString)
+    public async Task<IActionResult> Index(string? searchString, string? species)
     {
-        var pets = await _petService.GetAvailablePets();
+        var pets = await _petService.GetAvailablePets(species);
 
         if (!string.IsNullOrEmpty(searchString))
         {
@@ -42,6 +43,10 @@ public class PetController : Controller
                 .Where(p => p.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
                 .ToList();
         }
+
+        ViewBag.SelectedSpecies = species;
+        ViewBag.AvailableSpecies = await _petService.GetAvailableSpecies();
+        ViewBag.CurrentFilter = searchString;
 
         return View(pets);
     }

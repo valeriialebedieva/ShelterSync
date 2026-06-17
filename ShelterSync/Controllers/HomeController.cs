@@ -16,9 +16,9 @@ public class HomeController : Controller
         _petService = petService;
     }
 
-    public async Task<IActionResult> Index(string? searchString)
+    public async Task<IActionResult> Index(string? searchString, string? species)
     {
-        var pets = await _petService.GetAvailablePets();
+        var pets = await _petService.GetAvailablePets(species);
 
         if (!string.IsNullOrEmpty(searchString))
         {
@@ -28,6 +28,9 @@ public class HomeController : Controller
         }
 
         ViewBag.PetOfTheWeek = await _petService.GetPetOfTheWeek();
+        ViewBag.SelectedSpecies = species;
+        ViewBag.AvailableSpecies = await _petService.GetAvailableSpecies();
+        ViewBag.CurrentFilter = searchString;
 
         return View(pets);
     }
