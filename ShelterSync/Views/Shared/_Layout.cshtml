@@ -35,7 +35,13 @@
                             <a class="nav-link" asp-controller="Pet" asp-action="Index">Pets</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="WhyAdopt">Why Adopt?</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="Contact">Contact</a>
                         </li>
                         @if (User.Identity?.IsAuthenticated == true)
                         {
@@ -80,7 +86,7 @@
                     <p class="small mb-2">
                         <a asp-controller="Home" asp-action="Privacy">Privacy Policy</a>
                         <span class="mx-2 opacity-50">·</span>
-                        <a href="#">Contact Us</a>
+                        <a asp-controller="Home" asp-action="Contact">Contact Us</a>
                     </p>
                     <p class="text-muted small mb-0">&copy; 2026 ShelterSync. All rights reserved.</p>
                 </div>

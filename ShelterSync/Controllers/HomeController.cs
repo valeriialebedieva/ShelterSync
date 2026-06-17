@@ -32,7 +32,18 @@ public class HomeController : Controller
         return View(pets);
     }
 
+    public async Task<IActionResult> WhyAdopt()
+    {
+        var pets = await _petService.GetAvailablePets();
+        return View(pets);
+    }
+
     public IActionResult Privacy()
+    {
+        return View();
+    }
+
+    public IActionResult Contact()
     {
         return View();
     }

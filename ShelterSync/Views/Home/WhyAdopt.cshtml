@@ -1,0 +1,146 @@
+@model IReadOnlyList<ShelterSync.Models.Pet>
+
+@{
+    ViewData["Title"] = "Why Adopt?";
+
+    var fallbackImages = new (string Src, string Alt)[]
+    {
+        ("https://images.dog.ceo/breeds/retriever-golden/n02099601_3004.jpg", "A golden retriever ready for adoption"),
+        ("https://cdn2.thecatapi.com/images/N7rlRo9Zi.jpg", "A Siamese cat resting calmly"),
+        ("https://images.dog.ceo/breeds/labrador/john_walker_000.jpg", "A gentle Labrador mix outdoors"),
+        ("https://cdn2.thecatapi.com/images/b6yBY91Pg.jpg", "A curious tabby cat looking ahead")
+    };
+
+    var petImages = Model?
+        .Where(p => !string.IsNullOrWhiteSpace(p.ImagePath))
+        .Select(p => (
+            Src: p.ImagePath!,
+            Alt: $"{p.Name}, a {(string.IsNullOrWhiteSpace(p.Breed) ? p.Species : p.Breed)} available for adoption"
+        ))
+        .Take(4)
+        .ToList() ?? new List<(string Src, string Alt)>();
+
+    foreach (var image in fallbackImages)
+    {
+        if (petImages.Count >= 4)
+        {
+            break;
+        }
+
+        petImages.Add(image);
+    }
+}
+
+<div class="container py-4 why-adopt-page">
+    <section class="why-adopt-hero">
+        <div class="why-adopt-hero__content">
+            <span class="section-label">Adoption changes everything</span>
+            <h1>Why adopt a pet?</h1>
+            <p>
+                Adoption gives a shelter pet a second chance and gives your home a loyal companion with a story,
+                a personality, and so much love to share.
+            </p>
+            <div class="why-adopt-hero__actions">
+                <a asp-controller="Pet" asp-action="Index" class="btn btn-primary">Meet Available Pets</a>
+                <a href="#adoption-benefits" class="btn btn-outline-primary">See the Benefits</a>
+            </div>
+        </div>
+
+        <div class="why-adopt-collage" aria-label="Adoptable pet photos">
+            @for (var i = 0; i < petImages.Count; i++)
+            {
+                <figure class="why-adopt-collage__photo why-adopt-collage__photo--@(i + 1)">
+                    <img src="@petImages[i].Src" alt="@petImages[i].Alt" loading="lazy" />
+                </figure>
+            }
+        </div>
+    </section>
+
+    <section id="adoption-benefits" class="why-adopt-section">
+        <div class="section-heading why-adopt-section__heading">
+            <h2>Adoption brings more than a pet home</h2>
+            <span class="text-muted small">Love, care, and impact</span>
+        </div>
+
+        <div class="row align-items-stretch">
+            <div class="col-lg-5 mb-4 mb-lg-0">
+                <div class="why-adopt-benefits-image">
+                    <img src="~/images/why-adopt.jpg" alt="Happy family with an adopted pet" loading="lazy" />
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <div class="d-flex flex-column gap-3 h-100 justify-content-between">
+                    <article class="why-adopt-card why-adopt-card--primary">
+                        <div class="d-flex align-items-start gap-3">
+                            <span class="why-adopt-card__icon mb-0 flex-shrink-0" aria-hidden="true">&hearts;</span>
+                            <div>
+                                <h3 class="mb-1 text-start">A ready-made bond</h3>
+                                <p class="mb-0 text-start">Shelter pets are ready to meet people who will see them, choose them, and help them feel safe.</p>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="why-adopt-card why-adopt-card--sky">
+                        <div class="d-flex align-items-start gap-3">
+                            <span class="why-adopt-card__icon mb-0 flex-shrink-0" aria-hidden="true">&check;</span>
+                            <div>
+                                <h3 class="mb-1 text-start">More informed matches</h3>
+                                <p class="mb-0 text-start">Staff can share each pet's age, temperament, habits, and needs so families can choose well.</p>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="why-adopt-card why-adopt-card--coral">
+                        <div class="d-flex align-items-start gap-3">
+                            <span class="why-adopt-card__icon mb-0 flex-shrink-0" aria-hidden="true">+</span>
+                            <div>
+                                <h3 class="mb-1 text-start">Room for another rescue</h3>
+                                <p class="mb-0 text-start">Every adoption opens space, time, and care for another animal waiting for a safe place to land.</p>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="why-adopt-impact">
+        <div class="why-adopt-impact-photo">
+            <img src="~/images/pets-and-humans.jpeg" alt="Pets and humans bonding" loading="lazy" />
+        </div>
+        <div class="why-adopt-impact__content">
+            <span class="section-label">How adoption helps</span>
+            <h2>One simple choice creates a bigger circle of care.</h2>
+            <div class="why-adopt-steps">
+                <div class="why-adopt-step">
+                    <span>1</span>
+                    <div>
+                        <h3>Find a pet who fits your life</h3>
+                        <p>Browse available pets and look for the companion whose energy, needs, and personality feel right.</p>
+                    </div>
+                </div>
+                <div class="why-adopt-step">
+                    <span>2</span>
+                    <div>
+                        <h3>Start the adoption request</h3>
+                        <p>Send a request from the pet's profile so the shelter can review the match and follow up.</p>
+                    </div>
+                </div>
+                <div class="why-adopt-step">
+                    <span>3</span>
+                    <div>
+                        <h3>Build a new routine together</h3>
+                        <p>Patience, consistency, and affection help a newly adopted pet settle into their forever home.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="why-adopt-cta">
+        <div>
+            <span class="section-label">Ready to meet them?</span>
+            <h2>Your next best friend may already be waiting.</h2>
+            <p>Explore adoptable dogs and cats currently listed by the shelter.</p>
+        </div>
+        <a asp-controller="Pet" asp-action="Index" class="btn btn-primary">Browse Pets</a>
+    </section>
+</div>
